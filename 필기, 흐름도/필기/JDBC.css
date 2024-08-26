@@ -1,0 +1,125 @@
+[ JDBC(Java DataBase Connectivity) ]
+
+Java에서 DB에 접근할 수 있게 해주는 Java Programming API
+
+  - {API(Application Programming Interface)} :
+    다른 응용프로그램이 제공하는 기능을 제어할 수 있도록
+    제공하는 방법, 접점(Interface)
+
+  - {Java API} : 자바에서 다른 응용프로그램을 
+    제어할 수 있도록 제공하는 인터페이스
+
+- 추상메서드를 받아 강제 오버라이딩
+
+[ 작성법 ]
+
+{Connection} : DBMS와 연결하기 위한 정보를 저장한 객체
+{Statement}  : SQL 수행, 결과 반환용 객체
+{ResultSet}  : SELECT 수행 결과 저장 객체
+
+/* java.sql.PreparedStatement (준비된 Statement)
+* - SQL 중간에 ?(placeholder)를 작성하여
+* 	 ? 자리에 java 값을 대입할 준비가 되어있는 Statement
+*
+* ** PreparedStatement는 Statement의 자식 **
+*/
+{PreparedStatement}
+
+/* 1. JDBC 객체 참조용 변수 선언*/
+  // java.spl.Connection
+  // 특정 DBMS와 연결하기 위한 정보를 저장한 객체
+  // == DBeaver에서 사용하는 DB 연결과 같은 역할의 객체
+  //	  (DB 서버 주소, 포트번호, DB이름, 계정명, 비밀 번호)
+  Connection conn = null;
+
+  // java.sql.Statement 
+		// - 1) SQL을 DB에 전달
+		// - 2) DB에서 SQL 수행 결과를 반환 받아옴
+	Statement stmt = null;
+
+  // java.sql.ResultSet
+  // - SELECT 조회 결과를 저장하는 객체
+  ResultSet rs = null;
+
+/* 2. DriverManager 객체를 이용해서 Connection객체 생성하기 */
+  // java.sql.DriverManager
+  // - DB 연결 정보와 JDBC 드라이버를 이용해서
+  //	 원하는 DB와 연결할 수 있는 Connection 객체를 생성하는 객체
+
+    /* 2-1) Oracle JDBC Driver 객체를 메모리에 로드(적재) 하기 */ 
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			// Class.forName("패키지명+클래스명")
+			// - 해당 클래스를 읽어 메모리에 적재
+			//	-> JVM이 프로그램 동작에 사용할 객체를 생성하는 구문
+
+    /* 2-2) DB 연결 정보 작성 */
+    String type = "jdbc:oracle:thin:@";
+    host, port, dbName 등등 작성
+
+
+    /* 2-3) DB연결 정보와 DriverManager를 이용해서 
+			 * Connection 객체 생성*/
+			
+			conn = DriverManager.getConnection(
+        type + host + port + dbName, userName, password);
+
+/* 3. SQL 작성 */
+  // !! 주의 사항!!
+  // -> JDBC 코드에서 SQL 작성 시
+  //	  세미콜론(;)을 작성하면 안된다 !!
+  // -> "SQL 명령어가 올바르게 종료되지 않았습니다" 예외 발생
+
+  String sql = "SELECT "
+      + "EMP_ID, EMP_NAME, DEPT_CODE, JOB_CODE, SALARY, HIRE_DATE " // 끝에 띄어쓰기
+      + "FROM EMPLOYEE";
+
+
+/* 4. Statement 객체 생성 */
+  stmt = conn.createStatement();
+
+  /* PrepareStatement ? 값 있을시
+      pstmt = conn.prepareStatement(sql); 
+  
+      pstmt.setString(1, name);
+			pstmt.setString(2, id);
+  */
+
+  // 연결된 DB(Connection)에 SQL을 전달하고 결과를 반환 받을
+  // Statement 객체를 생성함
+  // SQLException : DB 연결과 관련되 예외의 최상위 부모
+
+/* 5. Statement 객체를 이용해서 SQL 수행 후 결과 반환 받기 */
+  // 1) ResultSet Statement.executeQuery(sql);
+  rs = stmt.executeQuery(sql);
+
+  // 2) int Statement.executeUpdate(sql);
+  int result = pstmt.executeUpdate();
+
+  // executeQuery() : SELCET 실행, ResultSet 반환
+  // executeUpdate() : DML 실행, 결과 행의 개수 반환(int)
+
+
+/* 6. 조회 결과가 담겨 있는 ResultSet을
+	* 커서(Cursor)를 이용해 1행씩 접근해
+	* 각 행에 작성된 컬럼 값 얻어오기
+	* */
+
+  // rs.next() : 커서를 다음 행으로 이동 시킨후
+	//			   이동된 행에 값이 있으면 true, 없으면 false 반환
+	//			   맨 처음 호출 시 1행 부터 시작
+  while(rs.next()){
+      // rs.get자료형(컬럼명 | 순서);
+      // - 현재 행에서 지정된 컬럼의 값을 얻어와 반환
+      컬럼값들 작성
+      
+      String empId   = rs.getString("EMP_ID");
+
+/* 7. 사용 완료된 JDBC 객체 자원 반환(close) */
+  // finally 구문 후 작성
+  // -> 수행하지 않으면 DB와 연결된 Connection이 남아 있어서
+  //	  다른 클라이언트가 추가적으로 연결되지 못하는 문제가 발생할 수 있다!!
+
+  if(rs   != null) rs.close();
+	if(stmt != null) stmt.close();
+	if(conn != null) conn.close();
