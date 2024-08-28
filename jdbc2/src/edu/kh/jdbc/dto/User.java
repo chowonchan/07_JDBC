@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 public class User {
 
-	private int userNo;
+	private int    userNo;
 	private String userId;
 	private String userPw;
 	private String userName;
