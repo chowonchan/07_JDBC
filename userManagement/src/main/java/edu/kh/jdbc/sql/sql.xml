@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+   <!--
+      driver.xml 파일 : DB 연결 정보를 작성하는 외부 파일 / 여기 있는 값들을 읽어감
+      
+      entry : K, V 한쌍을 나타내는 단위
+      <entry key = "K"> V </entry>
+    -->
+   <entry key = "driver">oracle.jdbc.driver.OracleDriver</entry>
+   <entry key = "url">jdbc:oracle:thin:@localhost:1521:XE</entry>
+   <entry key = "userName">KH_CWC</entry>
+   <entry key = "password">KH1234</entry>
+
+</properties>
