@@ -72,9 +72,10 @@ public class JDBCTemplate {
 			
 			// 2. Properties 메서드를 이용해서
 			//	  driver.xml 파일 내용을 읽어와 prop 에 저장
-			String filePath = "driver.xml"; // 프로젝트 폴더 바로 아래 ( / 쓰지 않음)
-			
-			
+			String filePath = 
+					JDBCTemplate.class
+					.getResource("/edu/kh/jdbc/sql/driver.xml").getPath();
+				
 			prop.loadFromXML(new FileInputStream(filePath));
 			// prop 안에 xml 적재
 
