@@ -20,6 +20,6 @@ public class Todo implements Serializable {
 	private String title;
 	private String detail;
 	private boolean complete;
-	private LocalDateTime regDate;
+	private String regDate;
 	
 }
